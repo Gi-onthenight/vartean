@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="VARTEAN" />
+    <meta property="og:description" content="Show Your Time And End Show Your activity" />
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}" />
+
+    <title>Home | Vartean</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Stylish&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <style>
+        .card {
+            border-radius: 20px;
+        }
+
+        .level {
+            margin: 24px 0 0 0;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            get_posts("{{user_info.username}}");
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container is-widescreen">
+        <nav class="level">
+            <div class="level-left">
+                <img src="{{ url_for('static', filename='banner.png') }}" width="100" />
+            </div>
+            <div id="menu" class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    More
+                </a>
+
+                <div class="navbar-dropdown">
+                    <a class="navbar-item" href="/">
+                        Home
+                    </a>
+                    <a class="navbar-item">
+                        Profile
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item" aria-label="logout" onclick="sign_out()">
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+
+        </nav>
+        <nav class="breadcrumb is-small" aria-label="breadcrumbs">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li class="is-active"><a href="#" aria-current="page">Profile</a></li>
+            </ul>
+        </nav>
+        <hr>
+        <section>
+            <div class="container is-widescreen">
+                <div class="columns ">
+                    <div class="column">
+
+                    </div>
+                    <div class="column is-three-fifths">
+
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-128x128">
+                                            <img class="is-rounded"
+                                                src="{{ url_for('static', filename=user_info.profile_pic_real) }}"
+                                                alt="Placeholder image" style=" border: 1px solid black;">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <p class="title is-4">{{ user_info.profile_name }}</p>
+                                        <p class="subtitle is-6">@{{ user_info.username }}</p>
+                                        <p class="subtitle is-5">{{ user_info.profile_info }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="content">
+                                    <button class="button is-rounded is-fullwidth" aria-label="edit"
+                                        onclick='$("#modal-edit").addClass("is-active")'>Edit Profile</button>
+                                </div>
+                                {% if status %}
+                                <div class="modal" id="modal-edit">
+                                    <div class="modal-background" onclick='$("#modal-edit").removeClass("is-active")'>
+                                    </div>
+                                    <div class="modal-content">
+                                        <div class="box">
+                                            <article class="media">
+                                                <div class="media-content">
+                                                    <div class="field">
+                                                        <label class="label" for="input-name">Name</label>
+                                                        <p class="control">
+                                                            <input id="input-name" class="input" placeholder="Your name"
+                                                                value="{{ user_info.profile_name }}" />
+                                                        </p>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label class="label" for="input-pic">Profile Picture</label>
+
+                                                        <div class="control is-expanded">
+                                                            <div class="file has-name">
+                                                                <label class="file-label" style="width: 100%">
+                                                                    <input id="input-pic" class="file-input" type="file"
+                                                                        name="resume" />
+                                                                    <span class="file-cta"><span class="file-icon"><i
+                                                                                class="fa fa-upload"></i></span>
+                                                                        <span class="file-label">Select a file</span>
+                                                                    </span>
+                                                                    <span id="file-name" class="file-name"
+                                                                        style="width: 100%; max-width: 100%">{{
+                                                                        user_info.profile_pic }}</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label class="label" for="textarea-about">Who am I?</label>
+
+                                                        <p class="control">
+                                                            <textarea id="textarea-about" class="textarea"
+                                                                placeholder="Introduce yourself">{{ user_info.profile_info }}</textarea>
+                                                        </p>
+                                                    </div>
+                                                    <nav class="level is-mobile">
+                                                        <div class="level-left"></div>
+                                                        <div class="level-right">
+                                                            <div class="level-item">
+                                                                <a class="button is-sparta"
+                                                                    onclick="update_profile()">Update</a>
+                                                            </div>
+                                                            <div class="level-item">
+                                                                <a class="button is-outlined"
+                                                                    onclick='$("#modal-edit").removeClass("is-active")'>Cancel</a>
+                                                            </div>
+                                                        </div>
+                                                    </nav>
+                                                </div>
+                                            </article>
+                                        </div>
+                                    </div>
+                                    <button class="modal-close is-large" aria-label="close"
+                                        onclick='$("#modal-edit").removeClass("is-active")'></button>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                        <section class="section">
+                            <div id="post-box" class="container">
+
+                            </div>
+                        </section>
+                    </div>
+                    <div class="column">
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+
+</html>
